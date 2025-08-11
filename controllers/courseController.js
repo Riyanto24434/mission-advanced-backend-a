@@ -1,23 +1,58 @@
-// controllers/courseController.js
-const db = require('../services/mockDB');
+const Course = require('../models/Course');
 
-const getAllCourses = (req, res) => {
-  const { search, sort, instructor } = req.query;
-  let courses = [...db.courses];
-  
-  // Implement filter/search
-  if (search) {
-    courses = courses.filter(c => 
-      c.title.includes(search) || 
-      c.description.includes(search)
+const getAllCourses = async (req, res) => {
+  try {
+    const { search, sort, instructor, minDuration, maxDuration } = req.query;
+    
+    const where = {};
+    const order = [];
+    
+    // Search filter
+    if (search) {
+      where.title = { [Sequelize.Op.like]: `%${search}%` };
+    }
+    
+    // Instructor filter
+    if (instructor) {
+      where.instructor = instructor;
+    }
+    
+    // Duration filter
+    if (minDuration || maxDuration) {
+      where.duration = {};
+      if (minDuration) where.duration[Sequelize.Op.gte] = minDuration;
+      if (maxDuration) where.duration[Sequelize.Op.lte] = maxDuration;
+    }
+    
+    // Sorting
+    if (sort) {
+      const sortFields = sort.split(',');
+      sortFields.forEach(field => {
+        const [column, direction] = field.split(':');
+        order.push([column, direction.toUpperCase()]);
+      });
+    } else {
+      order.push(['createdAt', 'DESC']);
+    }
+    
+    const courses = await Course.findAll({
+      where,
+      order
+    });
+    
+    res.status(200).json({
+      success: true,
+      count: courses.length,
+      data: courses
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
-  
-  // Implement sorting
-  if (sort === 'title') {
-    courses.sort((a, b) => a.title.localeCompare(b.title))
-  }
-  
-  res.json(courses);
-}
+};
 
-module.exports = { getAllCourses }
+module.exports = {
+  getAllCourses
+};

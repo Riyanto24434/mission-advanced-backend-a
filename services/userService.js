@@ -10,7 +10,7 @@ const registerUser = async (userData) => {
   });
 
   // Send verification email
-  await sendVerificationEmail(user.email, verificationToken);
+  // await sendVerificationEmail(user.email, verificationToken);
 
   return user;
 };

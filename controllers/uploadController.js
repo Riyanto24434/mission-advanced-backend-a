@@ -1,12 +1,29 @@
-// controllers/uploadController.js
-const upload = (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
+const upload = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No file uploaded'
+      });
+    }
+    
+    const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    
+    res.status(200).json({
+      success: true,
+      message: 'File uploaded successfully',
+      data: {
+        url: fileUrl
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
-  
-  res.json({
-    url: `/uploads/${req.file.filename}`
-  });
 };
 
-module.exports = { upload };
+module.exports = {
+  upload
+};
