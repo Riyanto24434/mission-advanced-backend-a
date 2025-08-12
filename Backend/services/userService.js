@@ -4,13 +4,14 @@ const { sendVerificationEmail } = require('./emailService');
 
 const registerUser = async (userData) => {
   const verificationToken = uuidv4();
+  const tokenExpiry = new Date(Date.now() + 3600000); // 1 jam expiry
   const user = await User.create({
     ...userData,
     verificationToken
   });
 
   // Send verification email
-  // await sendVerificationEmail(user.email, verificationToken);
+  await sendVerificationEmail(user.email, verificationToken);
 
   return user;
 };

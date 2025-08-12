@@ -1,3 +1,5 @@
+const multer = require('multer');
+
 const upload = async (req, res) => {
   try {
     if (!req.file) {
@@ -17,9 +19,17 @@ const upload = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({
+    let status = 500;
+    let message = error.message;
+
+    if (error instanceof multer.MulterError) {
+      status = 400;
+      message = "File upload error: " + error.message;
+    }
+
+    res.status(status).json({
       success: false,
-      message: error.message
+      message
     });
   }
 };

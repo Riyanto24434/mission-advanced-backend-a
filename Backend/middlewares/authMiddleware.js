@@ -19,3 +19,11 @@ const authenticate = (req, res, next) => {
 };
 
 module.exports = { authenticate };
+
+// authMiddleware.js
+/**
+ * Middleware untuk autentikasi JWT
+ * 1. Cek header Authorization
+ * 2. Verifikasi token
+ * 3. Lampirkan user object ke request
+ */
