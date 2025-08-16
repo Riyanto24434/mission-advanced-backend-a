@@ -16,11 +16,11 @@ const User = sequelize.define('User', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-    set(value) {
-      // hash password sebelum simpan
-      const hash = bcrypt.hashSync(value, 10);
-      this.setDataValue('password', hash);
-    }
+    // set(value) {
+    //   // hash password sebelum simpan
+    //   const hash = bcrypt.hashSync(value, 10);
+    //   this.setDataValue('password', hash);
+    // }
   },
   email: {
     type: DataTypes.STRING,
