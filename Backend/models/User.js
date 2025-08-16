@@ -1,3 +1,4 @@
+// models/User.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const bcrypt = require('bcrypt');
@@ -16,6 +17,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
     set(value) {
+      // hash password sebelum simpan
       const hash = bcrypt.hashSync(value, 10);
       this.setDataValue('password', hash);
     }
@@ -29,7 +31,12 @@ const User = sequelize.define('User', {
     }
   },
   verificationToken: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  tokenExpiry: {
+    type: DataTypes.DATE,
+    allowNull: true
   },
   isVerified: {
     type: DataTypes.BOOLEAN,
